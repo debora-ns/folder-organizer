@@ -1,0 +1,28 @@
+import os
+import shutil
+import logging
+
+# Configuração do log
+logging.basicConfig(
+    filename='organizador.log', 
+    level=logging.INFO,
+    format='%(asctime)s:%(levelname)s:%(message)s'
+)
+
+downloads_folder_path = os.path.expanduser("~/Downloads")
+
+for file in os.listdir(downloads_folder_path):
+    try:
+        if os.path.isfile(os.path.join(downloads_folder_path, file)):
+            filename, file_extension = os.path.splitext(file)
+            folder_to_organize_file = os.path.join(downloads_folder_path, file_extension[1:])
+
+            if not os.path.isdir(folder_to_organize_file):
+                os.mkdir(folder_to_organize_file)
+
+            shutil.move(os.path.join(downloads_folder_path, file), os.path.join(folder_to_organize_file, file))
+            logging.info(f'Arquivo {file} movido para {folder_to_organize_file}')
+    except OSError as e:
+        logging.error(f"Ocorreu um erro: {e.strerror}")
+    except Exception as e:
+        logging.error(f"Ocorreu um erro inesperado: {str(e)}")
